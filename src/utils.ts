@@ -1,4 +1,4 @@
-import { pathExistsSync, ensureDirSync } from "fs-extra";
+import { ensureDirSync, pathExistsSync } from "fs-extra";
 import winston, { format } from "winston";
 import path from "path";
 import { execSync } from "child_process";
@@ -7,10 +7,10 @@ import "core-js/stable/string/at";
 import { home } from "./config";
 import { devicesType } from "./types";
 
+const util = require('util');
+
 type levelType = "info" | "error" | "warn";
-// find arr1
-// eslint-disable-next-line max-len
-export const diff = (localArr: string[], remoteArr: string[]): string[] => remoteArr.filter((item) => !localArr.includes(item));
+
 const logger = winston.createLogger({
   format: format.combine(
     format.timestamp({
@@ -61,13 +61,14 @@ export const replace = (str: string): string => {
 // 获取设备
 export const devices = (): devicesType[] => {
   const res = execSync("adb devices").toString();
-  const arr = res
+  return res
     .split(/\n/)
     .map((line) => line.split("\t"))
     .filter((line) => line.length > 1)
-    .map((device) => ({ name: device[0].trim(), status: device[1].trim() }));
-
-  return arr;
+    .map((device) => ({
+      name: device[0].trim(),
+      status: device[1].trim()
+    }));
 };
 
 let currentDeviceName: string = "";
@@ -119,3 +120,7 @@ export const isPathAdb = (folderPath: string): boolean => {
 
 // 路径后面补上斜杠
 export const pathRepair = (spath: string): string => (spath.at(-1) === "/" ? spath : `${spath}/`);
+
+export const deepLog = <T=any>(object:T, depth:null|number = null) => {
+  console.log(util.inspect(object, { showHidden: false, depth, colors: true }));
+};
