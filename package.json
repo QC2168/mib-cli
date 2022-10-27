@@ -15,9 +15,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QC2168/MIB.git"
+    "url": "git+https://github.com/QC2168/mib-cli.git"
   },
-  "keywords": [],
+  "keywords": [
+    "adb",
+    "mib",
+    "mib-cli",
+    "backup"  ],
   "author": "QC2168",
   "license": "MIT",
   "files": [
@@ -27,13 +31,13 @@
     "mib": "bin/index.js"
   },
   "bugs": {
-    "url": "https://github.com/QC2168/MIB/issues"
+    "url": "https://github.com/QC2168/mib-cli/issues"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "homepage": "https://github.com/QC2168/MIB#readme",
+  "homepage": "https://github.com/QC2168/mib-cli#readme",
   "devDependencies": {
     "@types/core-js": "^2.5.5",
     "@types/node": "^17.0.10",

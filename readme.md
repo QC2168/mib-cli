@@ -1,13 +1,13 @@
-# MIB
-一款基于`Node.js`和`ADB`的开发的备份工具，根据你的配置自动将移动设备上的数据文件迁移备份至电脑上，支持增量备份。
+# mib-cli
+一款基于`Node.js`和`ADB`的开发的备份工具（命令行），根据你的配置自动将移动设备上的数据文件迁移备份至电脑上，支持增量备份。
+> 图形化版本请前往 [mib repo](https://github.com/QC2168/mib)
 ## 功能
 - [x] USB连接备份数据
-- [x] 无线连接备份数据
 - [x] 增量备份
 - [x] 多设备备份选择
 - [x] 单节点全量备份
 
-## 安装MIB
+## 安装mib-cli
 
 ```
 npm install -g @qc2168/mib
@@ -16,12 +16,6 @@ npm install -g @qc2168/mib
 > 在使用此插件之前，你需要在你的设备上安装`Node.js`和`ADB`（并添加设置为全局变量中）
 ## 如何开启adb模式
 [在设备上启用 adb 调试](https://developer.android.com/studio/command-line/adb?hl=zh-cn#Enabling)
-## 使用无线连接
-无线连接说明
-
-[通过 Wi-Fi 连接到设备（Android 10 及更低版本）](https://developer.android.com/studio/command-line/adb?hl=zh-cn#wireless)
-
-[通过 Wi-Fi 连接到设备（Android 11 及更高版本）](https://developer.android.com/studio/command-line/adb?hl=zh-cn#connect-to-a-device-over-wi-fi-android-11+)
 ## 执行备份
 
 根据你的配置文件，快速的备份你移动设备中的数据到本地磁盘中
