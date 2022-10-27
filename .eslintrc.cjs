@@ -19,6 +19,7 @@ module.exports = {
     },
   },
   rules: {
+    'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],
     quotes: 0, // 关闭单引号
     "import/extensions": [
       "error",
