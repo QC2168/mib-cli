@@ -3,13 +3,20 @@
   "version": "1.1.0",
   "description": "data backup tool",
   "type": "module",
-  "main": "bin/index.js",
-  "types": "bin/index.d.ts",
-  "module": "bin/index.js",
+  "main": "./dist/bin/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/es/index.mjs",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.cjs",
+      "import": "./dist/es/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint ./src/**/*.ts --fix",
     "dev": "node scripts/dev.js",
-    "types": "tsc --emitDeclarationOnly --outDir bin",
+    "types": "tsc --declaration --emitDeclarationOnly --outfile dist/index.d.ts",
     "build": "pnpm lint && node scripts/build.js && pnpm types",
     "commit": "gitmoji -c"
   },
@@ -21,14 +28,15 @@
     "adb",
     "mib",
     "mib-cli",
-    "backup"  ],
+    "backup"
+  ],
   "author": "QC2168",
   "license": "MIT",
   "files": [
-    "bin"
+    "dist"
   ],
   "bin": {
-    "mib": "bin/index.js"
+    "mib": "dist/bin/index.js"
   },
   "bugs": {
     "url": "https://github.com/QC2168/mib-cli/issues"

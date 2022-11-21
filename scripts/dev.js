@@ -1,10 +1,34 @@
-import config from "./confg.js";
 import esbuild from "esbuild";
+import config, { esm, cjs, dev } from "./config.js";
 
 esbuild
   .build({
     ...config,
-    watch: true,
-    sourcemap: true,
+    ...esm,
+    ...dev,
+    outdir: "/dist/es",
+    entryPoints: ["src/adbCmd.ts", "src/backup.ts", "src/config.ts", "src/devices.ts", "src/node.ts"],
+  })
+  .catch(() => process.exit(1));
+
+esbuild
+  .build({
+    ...config,
+    ...cjs,
+    ...dev,
+    outdir: "/dist/cjs",
+    entryPoints: ["src/adbCmd.ts", "src/backup.ts", "src/config.ts", "src/devices.ts", "src/node.ts"],
+  })
+  .catch(() => process.exit(1));
+
+esbuild
+  .build({
+    ...config,
+    ...cjs,
+    ...dev,
+    outfile: "/dist/bin/index.js",
+    entryPoints: ["src/index.ts"],
+    bundle: true,
+    external: ["./node_modules/*"],
   })
   .catch(() => process.exit(1));
