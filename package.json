@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "eslint ./src/**/*.ts --fix",
     "dev": "node scripts/dev.js",
-    "types": "tsc --declaration --emitDeclarationOnly --outfile dist/index.d.ts",
+    "types": "tsc --emitDeclarationOnly --outDir dist",
     "build": "pnpm lint && node scripts/build.js && pnpm types",
     "commit": "gitmoji -c"
   },
@@ -60,7 +60,6 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "core-js": "^3.21.1",
     "esbuild": "^0.15.7",
     "prompts": "^2.4.2",
     "regenerator-runtime": "^0.13.9",

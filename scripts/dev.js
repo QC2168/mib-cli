@@ -7,7 +7,7 @@ esbuild
     ...esm,
     ...dev,
     outdir: "/dist/es",
-    entryPoints: ["src/adbCmd.ts", "src/backup.ts", "src/config.ts", "src/devices.ts", "src/node.ts"],
+    entryPoints: ["src/index.ts"],
   })
   .catch(() => process.exit(1));
 
@@ -17,7 +17,7 @@ esbuild
     ...cjs,
     ...dev,
     outdir: "/dist/cjs",
-    entryPoints: ["src/adbCmd.ts", "src/backup.ts", "src/config.ts", "src/devices.ts", "src/node.ts"],
+    entryPoints: ["src/index.ts"],
   })
   .catch(() => process.exit(1));
 
@@ -27,7 +27,7 @@ esbuild
     ...cjs,
     ...dev,
     outfile: "/dist/bin/index.js",
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/bin.ts"],
     bundle: true,
     external: ["./node_modules/*"],
   })
