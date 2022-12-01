@@ -89,6 +89,9 @@ export function diff(
   localArr: FileNodeType[],
   remoteArr: FileNodeType[],
 ): FileNodeType[] {
+  if (localArr.length === 0 && remoteArr.length > 0) {
+    return remoteArr;
+  }
   const temp: FileNodeType[] = [];
   for (let i = 0; i < remoteArr.length; i += 1) {
     const item = remoteArr[i];
