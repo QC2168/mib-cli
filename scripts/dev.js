@@ -7,6 +7,7 @@ esbuild
     ...esm,
     ...dev,
     outdir: "/dist/es",
+    bundle: true,
     entryPoints: ["src/index.ts"],
   })
   .catch(() => process.exit(1));
