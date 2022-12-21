@@ -17,6 +17,7 @@ esbuild
     ...cjs,
     ...dev,
     outdir: "/dist/cjs",
+    bundle: true,
     entryPoints: ["src/index.ts"],
   })
   .catch(() => process.exit(1));
