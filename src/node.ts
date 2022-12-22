@@ -64,7 +64,7 @@ export function createFileNode(
 }
 
 // 获取指定目录下文件节点
-export function getLocalFileNodeList(targetPath: string): FileNodeType[] {
+export function getLocalFileNodeList(targetPath: string, deep = true): FileNodeType[] {
   const fileNodeList: FileNodeType[] = [];
   // const config = getConfig();
   // const ignoreList = config.ignoreFileList ?? [];
@@ -75,7 +75,7 @@ export function getLocalFileNodeList(targetPath: string): FileNodeType[] {
     //   continue;
     // }
     try {
-      const node = createFileNode(pathRepair(targetPath) + item);
+      const node = createFileNode(pathRepair(targetPath) + item, deep);
       fileNodeList.push(node);
     } catch (error) {
       throw new Error(`${item}生成节点出错啦--${error}`);
