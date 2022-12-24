@@ -1,5 +1,3 @@
-/* eslint-disable no-continue */
-/* eslint-disable no-undef */
 /* eslint-disable no-restricted-syntax */
 import { readdirSync, statSync } from "fs";
 import { FileNodeType } from "./types";
@@ -9,11 +7,12 @@ import pathRepair from "./utils/pathRepair";
 export default {};
 // 获取文件列表
 export function getMobileFileNodeList(
+  device:string,
   targetPath: string,
   deep = true,
 ): FileNodeType[] {
-  if (!isPathAdb(targetPath)) return [];
-  const res = execAdb(`shell ls -l ${targetPath}`).toString().split("\r\n");
+  if (!isPathAdb(targetPath, device)) return [];
+  const res = execAdb(`shell ls -l ${targetPath}`, { currentDeviceName: device }).toString().split("\r\n");
   res.shift();
   res.pop();
   const fileNodeList: FileNodeType[] = [];
@@ -31,7 +30,7 @@ export function getMobileFileNodeList(
         filePath,
         children:
           arr[0].startsWith("d") && deep
-            ? getMobileFileNodeList(pathRepair(filePath))
+            ? getMobileFileNodeList(device, pathRepair(filePath))
             : null,
       };
       fileNodeList.push(node);

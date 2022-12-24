@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
 import { execAdb } from "./utils/adb";
 import log from "./utils/logger";
@@ -13,8 +12,8 @@ import { createAdbOrders } from "./adbCmd";
 
 const speedReg: RegExp = /[0-9.]+\sMB\/s/;
 
-const initData = (backupDir: string, outputDir: string) => {
-  const mobileFileNodeList: FileNodeType[] = getMobileFileNodeList(backupDir);
+const initData = (backupDir: string, outputDir: string, device:string) => {
+  const mobileFileNodeList: FileNodeType[] = getMobileFileNodeList(device, backupDir);
   // 获取当前存储空间
   const localFileNodeList: FileNodeType[] = getLocalFileNodeList(outputDir);
   // 对比文件
@@ -26,10 +25,10 @@ const initData = (backupDir: string, outputDir: string) => {
   };
 };
 
-const move = (orders: string[]): void => {
+const move = (orders: string[], device:string): void => {
   for (const order of orders) {
     try {
-      const out: string = execAdb(order);
+      const out: string = execAdb(order, { currentDeviceName: device });
       const speed = out.match(speedReg) || ["读取速度失败"];
       log(`平均传输速度${speed}`);
     } catch (e: any) {
@@ -39,10 +38,10 @@ const move = (orders: string[]): void => {
   }
 };
 
-const moveFolder = (source: string, target: string): void => {
+const moveFolder = (source: string, target: string, device:string): void => {
   log(`正在备份文件夹${source}`);
   try {
-    const out: string = execAdb(`pull "${source}" "${target}"`);
+    const out: string = execAdb(`pull "${source}" "${target}"`, { currentDeviceName: device });
     const speed = out.match(speedReg) || ["读取速度失败"];
     log(`平均传输速度${speed}`);
   } catch (e: any) {
@@ -52,6 +51,7 @@ const moveFolder = (source: string, target: string): void => {
 
 // backupFn
 export const backup = (
+  device:string,
   target: string,
   output: string,
   full: boolean = false,
@@ -59,7 +59,7 @@ export const backup = (
   if (!full) {
     // 备份非备份的文件数据
     // 获取手机中的文件信息,对比本地
-    const { diffList } = initData(target, output);
+    const { diffList } = initData(target, output, device);
     // 计算体积和数量
     computeNodeListSize(diffList);
     // 执行备份程序
@@ -68,9 +68,11 @@ export const backup = (
       log("无需备份");
       return;
     }
-    move(orders);
+    move(orders, device);
   } else {
     // 不文件对比，直接备份
-    moveFolder(target, output);
+    moveFolder(target, output, device);
   }
 };
+
+export default backup;

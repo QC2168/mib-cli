@@ -7,7 +7,7 @@ import { selectDevice } from "./devices";
 import { getConfig } from "./config";
 import { backup } from "./backup";
 
-const MIB = () => {
+const MIB = (device:string) => {
   // 获取配置文件
   const { backups, output } = getConfig();
   // 判断备份节点是否为空
@@ -30,12 +30,12 @@ const MIB = () => {
         ? item.output && pathRepair(item.output)
         : rootPath;
       // 判断备份路径是否存在
-      if (!isPathAdb(backupDir)) {
+      if (!isPathAdb(backupDir, device)) {
         log(`备份路径:${backupDir} 不存在已跳过`, "error");
       } else {
         // 判断导出路径
         isPath(outputDir);
-        backup(backupDir, outputDir, item.full);
+        backup(device, backupDir, outputDir, item.full);
       }
     });
   }
@@ -44,5 +44,5 @@ const MIB = () => {
 
 (async () => {
   const device: string | boolean = await selectDevice();
-  if (device) MIB();
+  if (device) MIB(device);
 })();

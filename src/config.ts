@@ -16,6 +16,7 @@ const createDefaultConfig = (): ConfigType => {
   const conf: ConfigType = {
     backups: [],
     output: "C:/",
+    adbPath: "",
   };
   writeFileSync(CONFIG_PATH, JSON.stringify(conf), {
     encoding: "utf8",

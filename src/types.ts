@@ -20,6 +20,7 @@ export interface SaveItemType {
 export interface ConfigType {
   backups: SaveItemType[];
   output: string;
+  adbPath: string;
 }
 
 // 设备列表
