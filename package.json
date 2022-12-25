@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint ./src/**/*.ts --fix",
+    "lint": "eslint ./src/**/*.ts --fix && tsc",
     "dev": "node scripts/dev.js",
     "types": "tsc --emitDeclarationOnly --outDir dist",
     "build": "pnpm lint && node scripts/build.js && pnpm types",
