@@ -24,7 +24,7 @@ export interface ConfigType {
 }
 
 // 设备列表
-export interface devicesType {
+export interface DevicesType {
   name: string;
   status: string;
 }
