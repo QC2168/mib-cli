@@ -5,9 +5,10 @@ import { execAdb, isPathAdb } from "./utils/adb";
 import pathRepair from "./utils/pathRepair";
 
 export default {};
+
 // 获取文件列表
 export function getMobileFileNodeList(
-  device:string,
+  device: string,
   targetPath: string,
   deep = true,
 ): FileNodeType[] {
@@ -29,9 +30,9 @@ export function getMobileFileNodeList(
         fileSize,
         filePath,
         children:
-          arr[0].startsWith("d") && deep
-            ? getMobileFileNodeList(device, pathRepair(filePath))
-            : null,
+                    arr[0].startsWith("d") && deep
+                      ? getMobileFileNodeList(device, pathRepair(filePath))
+                      : null,
       };
       fileNodeList.push(node);
     }
@@ -46,20 +47,31 @@ export function createFileNode(
   deep = true,
 ): FileNodeType {
   const detail = statSync(targetFilePath);
-  const children = [];
-  if (detail.isDirectory() && deep) {
-    for (const item of readdirSync(targetFilePath)) {
-      children.push(createFileNode(pathRepair(targetFilePath) + item));
+  try {
+    const children = [];
+    if (detail.isDirectory() && deep) {
+      for (const item of readdirSync(targetFilePath)) {
+        children.push(createFileNode(pathRepair(targetFilePath) + item));
+      }
     }
+    return {
+      fileSize: detail.size,
+      fileName: targetFilePath.split("/").at(-1) ?? "读取文件名错误",
+      filePath: targetFilePath,
+      isDirectory: detail.isDirectory(),
+      fileMTime: detail.mtime,
+      children,
+    };
+  } catch (e) {
+    return {
+      fileSize: 0,
+      fileName: targetFilePath.split("/").at(-1) ?? "读取文件名错误",
+      filePath: targetFilePath,
+      isDirectory: detail.isDirectory(),
+      fileMTime: detail.mtime,
+      children: [],
+    };
   }
-  return {
-    fileSize: detail.size,
-    fileName: targetFilePath.split("/").at(-1) ?? "读取文件名错误",
-    filePath: targetFilePath,
-    isDirectory: detail.isDirectory(),
-    fileMTime: detail.mtime,
-    children,
-  };
 }
 
 // 获取指定目录下文件节点
@@ -77,7 +89,8 @@ export function getLocalFileNodeList(targetPath: string, deep = true): FileNodeT
       const node = createFileNode(pathRepair(targetPath) + item, deep);
       fileNodeList.push(node);
     } catch (error) {
-      throw new Error(`${item}生成节点出错啦--${error}`);
+      console.error(`${item}生成节点出错啦--${error}`);
+      return [];
     }
   }
 

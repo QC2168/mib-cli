@@ -1,11 +1,11 @@
-import { execSync } from "node:child_process";
 import prompts from "prompts";
-import { devicesType } from "./types";
+import { DevicesType } from "./types";
 import log from './utils/logger';
+import { execAdb } from "./utils/adb";
 
 // 获取设备
-export const devices = (): devicesType[] => {
-  const res = execSync("adb devices").toString();
+export const devices = (): DevicesType[] => {
+  const res = execAdb("devices");
   return res
     .split(/\n/)
     .map((line) => line.split("\t"))
@@ -16,11 +16,10 @@ export const devices = (): devicesType[] => {
     }));
 };
 
-let currentDeviceName: string = "";
 // 指定设备
 export const selectDevice = async (): Promise<string | false> => {
   // 获取设备
-  const list: devicesType[] = devices();
+  const list: DevicesType[] = devices();
 
   if (list.length === 0) {
     log("当前无设备连接，请连接后再执行该工具", "warn");
@@ -42,6 +41,6 @@ export const selectDevice = async (): Promise<string | false> => {
     log("请在设备上允许USB调试", "warn");
     return false;
   }
-  currentDeviceName = value;
-  return currentDeviceName;
+
+  return value;
 };
