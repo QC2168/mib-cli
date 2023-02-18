@@ -18,6 +18,7 @@ esbuild
     outdir: "/dist/cjs",
     bundle: true,
     entryPoints: ["src/index.ts"],
+    external: ["./node_modules/*"],
   })
   .catch(() => process.exit(1));
 
