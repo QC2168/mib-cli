@@ -1,33 +1,40 @@
 import { execSync } from 'node:child_process';
-import { getConfig } from '../config';
 
 export interface ExecAdbOptions {
-    currentDeviceName?: string;
-    adbPath?: string;
+    current: string;
+    adbPath: string;
 }
 
 const PATH_REG = /adb\.exe$/;
 
-const { adbPath: userAdbPath } = getConfig();
-
-export const execAdb = (code: string, option: ExecAdbOptions = {}) => {
+const checkOpt = (option:ExecAdbOptions) => {
   const {
-    currentDeviceName = '',
-    adbPath = userAdbPath || 'adb.exe',
+    current = '',
+    adbPath = 'adb.exe',
   } = option;
   if (!PATH_REG.test(adbPath!)) {
     throw new Error('请输入正确的ADB.exe路径');
   }
+  return {
+    current,
+    adbPath,
+  };
+};
 
+export const execAdb = (code: string, option:ExecAdbOptions) => {
+  const {
+    current,
+    adbPath,
+  } = checkOpt(option);
   const command = `${adbPath} ${
-    currentDeviceName ? `-s ${currentDeviceName}` : ""
+    current ? `-s ${current}` : ""
   } ${code}`;
   return execSync(command).toString();
 };
 
-export const isPathAdb = (folderPath: string, device: string): boolean => {
+export const isPathAdb = (folderPath: string, option: ExecAdbOptions): boolean => {
   try {
-    execAdb(`shell ls -l "${folderPath}"`, { currentDeviceName: device });
+    execAdb(`shell ls -l "${folderPath}"`, option);
     return true;
   } catch {
     return false;
