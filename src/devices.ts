@@ -17,13 +17,13 @@ export const devices = (): DevicesType[] => {
 };
 
 // 指定设备
-export const selectDevice = async (): Promise<string | false> => {
+export const selectDevice = async (): Promise<string | null> => {
   // 获取设备
   const list: DevicesType[] = devices();
 
   if (list.length === 0) {
     log("当前无设备连接，请连接后再执行该工具", "warn");
-    return false;
+    return null;
   }
 
   const result = list.map((i) => ({ title: i.name, value: i.name }));
@@ -39,7 +39,7 @@ export const selectDevice = async (): Promise<string | false> => {
   if (deviceStatus === "unauthorized") {
     log("该设备无权访问权限", "warn");
     log("请在设备上允许USB调试", "warn");
-    return false;
+    return null;
   }
 
   return value;
