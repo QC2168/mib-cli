@@ -1,6 +1,6 @@
-import { platform, env } from "process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "path";
+import { homedir } from "node:os";
 import getCParams from "./utils/getCParams";
 
 // 备份节点
@@ -19,7 +19,8 @@ export interface ConfigType {
 }
 
 const params = getCParams();
-export const home = platform === "win32" ? env.USERPROFILE : env.HOME;
+// export const home = platform === "win32" ? env.USERPROFILE : env.HOME;
+export const home = homedir();
 
 // 获取配置文件名称
 const DEFAULT_CONFIG_FILE_NAME = ".mibrc";
