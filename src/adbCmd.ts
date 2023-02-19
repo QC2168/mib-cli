@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
 import { mkdirSync, existsSync } from "node:fs";
-import type { FileNodeType } from "./types";
+import { type FileNodeType } from "./node";
 import pathRepair from "./utils/pathRepair";
 
 // 传入节点创建移动命令

@@ -1,11 +1,15 @@
 import prompts from "prompts";
-import { DevicesType } from "./types";
 import log from './utils/logger';
 import { execAdb } from "./utils/adb";
 
+export interface DevicesType {
+  name: string;
+  status: string;
+}
+
 // 获取设备
-export const devices = (): DevicesType[] => {
-  const res = execAdb("devices");
+export const devices = (adbPath:string): DevicesType[] => {
+  const res = execAdb("devices", { adbPath });
   return res
     .split(/\n/)
     .map((line) => line.split("\t"))
@@ -17,9 +21,9 @@ export const devices = (): DevicesType[] => {
 };
 
 // 指定设备
-export const selectDevice = async (): Promise<string | null> => {
+export const selectDevice = async (adbPath:string): Promise<string | null> => {
   // 获取设备
-  const list: DevicesType[] = devices();
+  const list: DevicesType[] = devices(adbPath);
 
   if (list.length === 0) {
     log("当前无设备连接，请连接后再执行该工具", "warn");

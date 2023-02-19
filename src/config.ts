@@ -1,61 +1,51 @@
 import { platform, env } from "process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "path";
+import getCParams from "./utils/getCParams";
 
-const HOME = platform === "win32" ? env.USERPROFILE : env.HOME;
-
+// 备份节点
 export interface SaveItemType {
   path: string;
   comment: string;
   full?: boolean;
-  output?: string;
+  output?:string;
 }
+
+// 备份目标
 export interface ConfigType {
-  configFileName: string;
-  configFilePath: string;
-  adbPath: string;
   backups: SaveItemType[];
   output: string;
+  adbPath?: string;
 }
 
-export default class Config {
-  private configFileName: string;
+const params = getCParams();
+export const home = platform === "win32" ? env.USERPROFILE : env.HOME;
 
-  private configFilePath: string;
+// 获取配置文件名称
+const DEFAULT_CONFIG_FILE_NAME = ".mibrc";
+// eslint-disable-next-line max-len
+export const DEFAULT_CONFIG_PATH: string = (params.config && existsSync(params.config) && params.config)
+  || path.join(home || "~/", DEFAULT_CONFIG_FILE_NAME);
 
-  private adbPath: string;
+const existConf = () => existsSync(DEFAULT_CONFIG_PATH);
+const createDefaultConfig = (cfgPath = DEFAULT_CONFIG_PATH): ConfigType => {
+  const conf: ConfigType = {
+    backups: [],
+    output: "C:/",
+    adbPath: "",
+  };
+  writeFileSync(cfgPath, JSON.stringify(conf), {
+    encoding: "utf8",
+  });
+  const data = readFileSync(cfgPath, "utf8");
+  return JSON.parse(data);
+};
 
-  constructor(config: ConfigType) {
-    this.configFileName = config.configFileName ?? '.mibrc';
-    this.configFilePath = config.configFilePath ?? path.join(HOME || "~/", this.configFileName);
-    this.adbPath = config.adbPath;
-  }
-
-  existConf() {
-    return existsSync(this.configFilePath);
-  }
-
-  createDefaultConfig(): ConfigType {
-    const conf: ConfigType = {
-      backups: [],
-      output: "C:/",
-      adbPath: this.adbPath,
-      configFileName: this.configFileName,
-      configFilePath: this.configFilePath,
-    };
-    writeFileSync(this.configFilePath, JSON.stringify(conf), {
-      encoding: "utf8",
-    });
-    const data = readFileSync(this.configFilePath, "utf8");
+export const getConfig = (cfgPath = DEFAULT_CONFIG_PATH): ConfigType => {
+  if (existConf()) {
+    const data = readFileSync(cfgPath, "utf8");
     return JSON.parse(data);
   }
-
-  getConfig(): ConfigType {
-    if (this.existConf()) {
-      const data = readFileSync(this.configFilePath, "utf8");
-      return JSON.parse(data);
-    }
-    // 找不到配置文件
-    return this.createDefaultConfig();
-  }
-}
+  // 找不到配置文件
+  return createDefaultConfig(cfgPath);
+};

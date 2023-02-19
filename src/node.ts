@@ -1,19 +1,36 @@
 /* eslint-disable no-restricted-syntax */
 import { readdirSync, statSync } from "fs";
-import { FileNodeType } from "./types";
-import { execAdb, isPathAdb } from "./utils/adb";
+import { execAdb, ExecAdbOptions, isPathAdb } from "./utils/adb";
 import pathRepair from "./utils/pathRepair";
 
 export default {};
 
+// 文件节点
+export interface FileNodeType {
+  fileSize: number;
+  fileName: string;
+  filePath: string;
+  isDirectory: boolean;
+  fileMTime?: string | Date;
+  children: FileNodeType[] | null;
+}
+
 // 获取文件列表
-export function getMobileFileNodeList(
-  device: string,
+interface pathType{
   targetPath: string,
-  deep = true,
+  deep?:boolean,
+  adbOpt:ExecAdbOptions
+}
+export function getMobileFileNodeList(
+  opt:pathType,
 ): FileNodeType[] {
-  if (!isPathAdb(targetPath, device)) return [];
-  const res = execAdb(`shell ls -l ${targetPath}`, { currentDeviceName: device }).toString().split("\r\n");
+  const {
+    targetPath,
+    deep = true,
+    adbOpt,
+  } = opt;
+  if (!isPathAdb(targetPath, adbOpt)) return [];
+  const res = execAdb(`shell ls -l ${targetPath}`, adbOpt).toString().split("\r\n");
   res.shift();
   res.pop();
   const fileNodeList: FileNodeType[] = [];
@@ -31,7 +48,7 @@ export function getMobileFileNodeList(
         filePath,
         children:
                     arr[0].startsWith("d") && deep
-                      ? getMobileFileNodeList(device, pathRepair(filePath))
+                      ? getMobileFileNodeList({ targetPath: pathRepair(filePath), adbOpt })
                       : null,
       };
       fileNodeList.push(node);
@@ -77,14 +94,8 @@ export function createFileNode(
 // 获取指定目录下文件节点
 export function getLocalFileNodeList(targetPath: string, deep = true): FileNodeType[] {
   const fileNodeList: FileNodeType[] = [];
-  // const config = getConfig();
-  // const ignoreList = config.ignoreFileList ?? [];
   const fileList = readdirSync(targetPath);
   for (const item of fileList) {
-    // if (ignoreList.includes(item)) {
-    //   // 在忽略名单中，跳过
-    //   continue;
-    // }
     try {
       const node = createFileNode(pathRepair(targetPath) + item, deep);
       fileNodeList.push(node);
@@ -127,11 +138,6 @@ export function diff(
   }
 
   return temp;
-  // const names: { [key: string]: boolean } = {};
-  // localArr.forEach((i) => {
-  //   names[i.fileName] = true;
-  // });
-  // return remoteArr.filter((i) => !names[i.fileName])
 }
 
 export function computeNodeListSize(list: FileNodeType[]): number {

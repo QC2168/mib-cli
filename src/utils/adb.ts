@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 
 export interface ExecAdbOptions {
-    current: string;
+    current?: string;
     adbPath: string;
 }
 
@@ -9,7 +9,7 @@ const PATH_REG = /adb\.exe$/;
 
 const checkOpt = (option:ExecAdbOptions) => {
   const {
-    current = '',
+    current,
     adbPath = 'adb.exe',
   } = option;
   if (!PATH_REG.test(adbPath!)) {
