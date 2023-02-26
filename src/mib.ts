@@ -1,12 +1,19 @@
-import { execAdb, ExecAdbOptions, isPathAdb } from './utils/adb';
+import { execAdb, ExecAdbOptions, isPathAdb } from "./utils/adb";
 import log from "./utils/logger";
 import { createAdbOrders } from "./adbCmd";
 import {
-  computeNodeListSize, diff, FileNodeType, getLocalFileNodeList, getMobileFileNodeList,
+  computeNodeListSize,
+  diff,
+  FileNodeType,
+  getLocalFileNodeList,
+  getMobileFileNodeList,
 } from "./node";
 import { devices, type DevicesType } from "./devices";
 import {
-  DEFAULT_CONFIG_PATH, getConfig, type SaveItemType, type ConfigType,
+  DEFAULT_CONFIG_PATH,
+  getConfig,
+  type SaveItemType,
+  type ConfigType,
 } from "./config";
 import isPath from "./utils/isPath";
 import pathRepair from "./utils/pathRepair";
@@ -14,15 +21,15 @@ import pathRepair from "./utils/pathRepair";
 const speedReg: RegExp = /[0-9.]+\sMB\/s/;
 
 export default class Mib {
-  private readonly adbOpt: ExecAdbOptions;
+  public readonly adbOpt: ExecAdbOptions;
 
   public readonly config: ConfigType;
 
   constructor(configPath = DEFAULT_CONFIG_PATH) {
     this.config = getConfig(configPath);
     this.adbOpt = {
-      adbPath: this.config.adbPath ?? 'adb.exe',
-      current: '',
+      adbPath: this.config.adbPath ?? "adb.exe",
+      current: "",
     };
   }
 
@@ -38,12 +45,10 @@ export default class Mib {
   }
 
   diffNode(backupDir: string, outputDir: string) {
-    const mobileFileNodeList: FileNodeType[] = getMobileFileNodeList(
-      {
-        targetPath: backupDir,
-        adbOpt: this.adbOpt,
-      },
-    );
+    const mobileFileNodeList: FileNodeType[] = getMobileFileNodeList({
+      targetPath: backupDir,
+      adbOpt: this.adbOpt,
+    });
     // 获取当前存储空间
     const localFileNodeList: FileNodeType[] = getLocalFileNodeList(outputDir);
     // 对比文件
@@ -72,10 +77,7 @@ export default class Mib {
     }
   }
 
-  moveFolder(
-    source: string,
-    target: string,
-  ) {
+  moveFolder(source: string, target: string) {
     log(`正在备份文件夹${source}`);
     try {
       const out: string = execAdb(`pull "${source}" "${target}"`, this.adbOpt);
@@ -110,36 +112,41 @@ export default class Mib {
     }
   }
 
-  start() {
-    const {
-      backups,
-      output,
-    } = this.config;
-    if (backups.length === 0) return;
+  start(item: SaveItemType) {
+    const { output } = this.config;
+
     if (!this.adbOpt.current) {
-      log('请先连接设备');
+      log("请先连接设备");
+      throw new Error('please connect your devices');
     }
+
+    log(`当前执行备份任务:${item.comment}`);
+    const arr = item.path.split("/").filter((i: string) => i !== "");
+    const folderName = arr.at(-1);
+    const backupDir = pathRepair(item.path);
+    // 备份目录
+    // 判断节点内是否有备份目录  // 拼接导出路径
+    const rootPath = pathRepair(pathRepair(output) + folderName);
+    const outputDir = item.output
+      ? item.output && pathRepair(item.output)
+      : rootPath;
+    // 判断备份路径是否存在
+    if (!isPathAdb(backupDir, this.adbOpt)) {
+      log(`备份路径:${backupDir} 不存在已跳过`, "error");
+    } else {
+      // 判断导出路径
+      isPath(outputDir);
+      this.backup(backupDir, outputDir, item.full);
+    }
+  }
+
+  startAll() {
+    const { backups, output } = this.config;
+    if (backups.length === 0) return;
     // 判断路径
     isPath(output);
     backups.forEach((item: SaveItemType) => {
-      log(`当前执行备份任务:${item.comment}`);
-      const arr = item.path.split("/").filter((i: string) => i !== "");
-      const folderName = arr.at(-1);
-      const backupDir = pathRepair(item.path);
-      // 备份目录
-      // 判断节点内是否有备份目录  // 拼接导出路径
-      const rootPath = pathRepair(pathRepair(output) + folderName);
-      const outputDir = item.output
-        ? item.output && pathRepair(item.output)
-        : rootPath;
-      // 判断备份路径是否存在
-      if (!isPathAdb(backupDir, this.adbOpt)) {
-        log(`备份路径:${backupDir} 不存在已跳过`, "error");
-      } else {
-        // 判断导出路径
-        isPath(outputDir);
-        this.backup(backupDir, outputDir, item.full);
-      }
+      this.start(item);
     });
   }
 }

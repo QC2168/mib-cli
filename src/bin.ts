@@ -7,7 +7,7 @@ import log from "./utils/logger";
   const device: string|null = await selectDevice(i.config.adbPath ?? 'adb.exe');
   if (device) {
     i.setDevice(device);
-    i.start();
+    i.startAll();
     log("程序结束");
   }
 })();
