@@ -50,3 +50,9 @@ export const getConfig = (cfgPath = DEFAULT_CONFIG_PATH): ConfigType => {
   // 找不到配置文件
   return createDefaultConfig(cfgPath);
 };
+
+export const setConfig = (cfgPath:string, conf:string) => {
+  writeFileSync(cfgPath, JSON.stringify(conf), {
+    encoding: "utf8",
+  });
+};
