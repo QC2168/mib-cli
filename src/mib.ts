@@ -149,4 +149,8 @@ export default class Mib {
       this.start(item);
     });
   }
+
+  setAdbPath(path: string) {
+    this.adbOpt.adbPath = path;
+  }
 }
