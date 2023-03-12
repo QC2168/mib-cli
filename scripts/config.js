@@ -6,6 +6,8 @@ const config = {
   loader: { ".ts": "ts" },
   logLevel: "info",
   target: ['esnext'],
+  external: ["./node_modules/*"],
+  bundle: true,
 };
 
 export const esm = {

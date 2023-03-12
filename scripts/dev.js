@@ -7,7 +7,6 @@ esbuild
     ...esm,
     ...dev,
     outdir: "/dist/es",
-    bundle: true,
     entryPoints: ["src/index.ts"],
   })
   .catch(() => process.exit(1));
@@ -18,9 +17,7 @@ esbuild
     ...cjs,
     ...dev,
     outdir: "/dist/cjs",
-    bundle: true,
     entryPoints: ["src/index.ts"],
-    external: ["./node_modules/*"],
   })
   .catch(() => process.exit(1));
 
@@ -31,7 +28,5 @@ esbuild
     ...dev,
     outfile: "/dist/bin/index.js",
     entryPoints: ["src/bin.ts"],
-    bundle: true,
-    external: ["./node_modules/*"],
   })
   .catch(() => process.exit(1));
