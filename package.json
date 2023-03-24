@@ -20,7 +20,7 @@
     "types": "tsc --emitDeclarationOnly --outDir dist",
     "build": "pnpm lint && node scripts/build.js && pnpm types",
     "commit": "gitmoji -c",
-    "release": "release-it"
+    "release": "pnpm lint && pnpm build && release-it"
   },
   "repository": {
     "type": "git",
