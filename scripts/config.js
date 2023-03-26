@@ -6,7 +6,6 @@ const config = {
   loader: { ".ts": "ts" },
   logLevel: "info",
   target: ['esnext'],
-  external: ["./node_modules/*"],
   bundle: true,
 };
 
@@ -20,7 +19,7 @@ export const dev = {
   watch: true,
   sourcemap: true,
 };
-export default config;
 export const buildConfig = {
-  ...config, minify: true,
+  ...config, minify: true, sourcemap: false,
 };
+export default config;
