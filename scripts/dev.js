@@ -26,7 +26,7 @@ esbuild
     ...config,
     ...cjs,
     ...dev,
-    outfile: "/dist/bin/index.js",
+    outfile: "/dist/bin/index.cjs",
     entryPoints: ["src/bin.ts"],
   })
   .catch(() => process.exit(1));

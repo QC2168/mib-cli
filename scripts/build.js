@@ -22,8 +22,8 @@ esbuild
 esbuild
   .build({
     ...buildConfig,
-    ...esm,
-    outfile: "/dist/bin/index.js",
+    ...cjs,
+    outfile: "/dist/bin/index.cjs",
     entryPoints: ["src/bin.ts"],
   })
   .catch(() => process.exit(1));

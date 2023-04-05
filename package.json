@@ -38,7 +38,7 @@
     "dist"
   ],
   "bin": {
-    "mib": "dist/bin/index.js"
+    "mib": "dist/bin/index.cjs"
   },
   "bugs": {
     "url": "https://github.com/QC2168/mib-cli/issues"
