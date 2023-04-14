@@ -56,3 +56,19 @@ export const setConfig = (cfgPath:string, conf:string) => {
     encoding: "utf8",
   });
 };
+
+export const addNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH) => {
+  const cfg = getConfig(cfgPath);
+  cfg.backups.push(data);
+  setConfig(cfgPath, JSON.stringify(cfg));
+};
+
+export const removeNode = (nodePath:string, cfgPath = DEFAULT_CONFIG_PATH) => {
+  const cfg = getConfig(cfgPath);
+  const index = cfg.backups.findIndex((i) => i.path === nodePath);
+  if (index === -1) {
+    return;
+  }
+  cfg.backups.splice(index, 1);
+  setConfig(cfgPath, JSON.stringify(cfg));
+};
