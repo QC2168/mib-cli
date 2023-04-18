@@ -51,7 +51,7 @@ export const getConfig = (cfgPath = DEFAULT_CONFIG_PATH): ConfigType => {
   return createDefaultConfig(cfgPath);
 };
 
-export const setConfig = (cfgPath:string, conf:string) => {
+export const setConfig = (cfgPath:string, conf:ConfigType) => {
   writeFileSync(cfgPath, JSON.stringify(conf), {
     encoding: "utf8",
   });
@@ -60,7 +60,7 @@ export const setConfig = (cfgPath:string, conf:string) => {
 export const addNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH) => {
   const cfg = getConfig(cfgPath);
   cfg.backups.push(data);
-  setConfig(cfgPath, JSON.stringify(cfg));
+  setConfig(cfgPath, cfg);
 };
 
 export const removeNode = (nodePath:string, cfgPath = DEFAULT_CONFIG_PATH) => {
@@ -70,5 +70,5 @@ export const removeNode = (nodePath:string, cfgPath = DEFAULT_CONFIG_PATH) => {
     return;
   }
   cfg.backups.splice(index, 1);
-  setConfig(cfgPath, JSON.stringify(cfg));
+  setConfig(cfgPath, cfg);
 };
