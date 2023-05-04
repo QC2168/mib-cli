@@ -57,18 +57,20 @@ export const setConfig = (cfgPath:string, conf:ConfigType) => {
   });
 };
 
-export const addNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH) => {
+export const addNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH): ConfigType => {
   const cfg = getConfig(cfgPath);
   cfg.backups.push(data);
   setConfig(cfgPath, cfg);
+  return cfg;
 };
 
-export const removeNode = (nodePath:string, cfgPath = DEFAULT_CONFIG_PATH) => {
+export const removeNode = (nodePath:string, cfgPath = DEFAULT_CONFIG_PATH):ConfigType => {
   const cfg = getConfig(cfgPath);
   const index = cfg.backups.findIndex((i) => i.path === nodePath);
   if (index === -1) {
-    return;
+    return cfg;
   }
   cfg.backups.splice(index, 1);
   setConfig(cfgPath, cfg);
+  return cfg;
 };
