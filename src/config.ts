@@ -8,7 +8,8 @@ export interface SaveItemType {
   path: string;
   comment: string;
   full?: boolean;
-  output?:string;
+  output?: string;
+  id?: number;
 }
 
 // 备份目标
@@ -59,18 +60,33 @@ export const setConfig = (cfgPath:string, conf:ConfigType) => {
 
 export const addNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH): ConfigType => {
   const cfg = getConfig(cfgPath);
-  cfg.backups.push(data);
+  cfg.backups.push({ ...data, id: Date.now() });
   setConfig(cfgPath, cfg);
   return cfg;
 };
 
-export const removeNode = (nodePath:string, cfgPath = DEFAULT_CONFIG_PATH):ConfigType => {
+export const removeNode = (id:number, cfgPath = DEFAULT_CONFIG_PATH):ConfigType => {
   const cfg = getConfig(cfgPath);
-  const index = cfg.backups.findIndex((i) => i.path === nodePath);
+  const index = cfg.backups.findIndex((i) => i.id === id);
   if (index === -1) {
     return cfg;
   }
   cfg.backups.splice(index, 1);
+  setConfig(cfgPath, cfg);
+  return cfg;
+};
+
+// eslint-disable-next-line max-len
+export const editNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH):ConfigType => {
+  const cfg = getConfig(cfgPath);
+  if (!(data?.id)) {
+    return cfg;
+  }
+  const index = cfg.backups.findIndex((i) => i.id === data.id);
+  if (index === -1) {
+    return cfg;
+  }
+  cfg.backups[index] = data;
   setConfig(cfgPath, cfg);
   return cfg;
 };
