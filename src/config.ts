@@ -90,3 +90,10 @@ export const editNode = (data:SaveItemType, cfgPath = DEFAULT_CONFIG_PATH):Confi
   setConfig(cfgPath, cfg);
   return cfg;
 };
+
+export const editOutputPath = (output:string, cfgPath = DEFAULT_CONFIG_PATH):ConfigType => {
+  const cfg = getConfig(cfgPath);
+  cfg.output = output;
+  setConfig(cfgPath, cfg);
+  return cfg;
+};
