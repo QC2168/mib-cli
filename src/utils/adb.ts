@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process';
+import log from './logger';
 
 export interface ExecAdbOptions {
     current?: string;
@@ -29,6 +30,7 @@ export const execAdb = (code: string, option:ExecAdbOptions) => {
   const command = `${adbPath} ${
     current ? `-s ${current}` : ""
   } ${code}`;
+  log(command);
   return execSync(command).toString();
 };
 
