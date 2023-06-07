@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { execAdb, ExecAdbOptions, isPathAdb } from "./utils/adb";
 import log from "./utils/logger";
 import { createAdbOrders } from "./adbCmd";
@@ -17,6 +18,7 @@ import {
 } from "./config";
 import isPath from "./utils/isPath";
 import pathRepair from "./utils/pathRepair";
+import { getErrorMessage } from "./utils/error";
 
 const speedReg: RegExp = /[0-9.]+\sMB\/s/;
 
@@ -121,15 +123,13 @@ export default class Mib {
     }
 
     log(`当前执行备份任务:${item.comment}`);
-    const arr = item.path.split("/").filter((i: string) => i !== "");
-    const folderName = arr.at(-1);
     const backupDir = pathRepair(item.path);
     // 备份目录
-    // 判断节点内是否有备份目录  // 拼接导出路径
-    const rootPath = pathRepair(pathRepair(output) + folderName);
+    // 判断节点内是否有备份目录
+    const rootPath = pathRepair(output);
     const outputDir = item.output
       ? item.output && pathRepair(item.output)
-      : rootPath;
+      : join(rootPath, item.path);
     // 判断备份路径是否存在
     if (!isPathAdb(backupDir, this.adbOpt)) {
       log(`备份路径:${backupDir} 不存在已跳过`, "error");
@@ -152,5 +152,23 @@ export default class Mib {
 
   setAdbPath(path: string) {
     this.adbOpt.adbPath = path;
+  }
+
+  restore(item: SaveItemType | SaveItemType[]) {
+    const separatorReg = /[\\/]/;
+    try {
+      if (Array.isArray(item)) {
+        for (let i = 0; i < item.length; i += 1) {
+          const targetPath = item[i].path.substring(0, item[i].path.lastIndexOf('/'));
+          execAdb(`push ${pathRepair(this.config.output + item[i].path)} ${pathRepair(targetPath)}`, this.adbOpt);
+        }
+      } else {
+        const folderName = item.path.split(separatorReg).at(-1);
+        const targetPath = item.path.substring(0, item.path.lastIndexOf('/'));
+        execAdb(`push ${this.config.output + folderName} ${targetPath}`, this.adbOpt);
+      }
+    } catch (e: any) {
+      log(`恢复数据时出错 ${getErrorMessage(e)}`);
+    }
   }
 }
