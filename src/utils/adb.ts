@@ -27,11 +27,14 @@ export const execAdb = (code: string, option:ExecAdbOptions) => {
     current,
     adbPath,
   } = checkOpt(option);
-  const command = `${adbPath} ${
+  const body = `${
     current ? `-s ${current}` : ""
   } ${code}`;
-  log(command);
-  return execSync(command).toString();
+  const command = `${adbPath} ${body}`;
+  log(`adb ${body}`);
+  return execSync(command, {
+    maxBuffer: 1024 ** 6,
+  }).toString();
 };
 
 export const isPathAdb = (folderPath: string, option: ExecAdbOptions): boolean => {
