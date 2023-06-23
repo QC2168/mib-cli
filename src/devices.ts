@@ -48,3 +48,8 @@ export const selectDevice = async (adbPath:string): Promise<string | null> => {
 
   return value;
 };
+
+export const rebootADBServer = (adbPath: string) => {
+  execAdb('kill-server', { adbPath, current: '' });
+  execAdb('start-server', { adbPath, current: '' });
+};
