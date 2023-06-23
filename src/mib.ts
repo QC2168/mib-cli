@@ -25,9 +25,12 @@ const speedReg: RegExp = /[0-9.]+\sMB\/s/;
 export default class Mib {
   public readonly adbOpt: ExecAdbOptions;
 
-  public readonly config: ConfigType;
+  private config: ConfigType;
+
+  private readonly configPath: string;
 
   constructor(configPath = DEFAULT_CONFIG_PATH) {
+    this.configPath = configPath;
     this.config = getConfig(configPath);
     this.adbOpt = {
       adbPath: this.config.adbPath ?? "adb.exe",
@@ -189,5 +192,10 @@ export default class Mib {
       }
     }
     return node;
+  }
+
+  public reloadConfig(): ConfigType {
+    this.config = getConfig(this.configPath);
+    return this.config;
   }
 }
