@@ -171,4 +171,23 @@ export default class Mib {
       log(`恢复数据时出错 ${getErrorMessage(e)}`);
     }
   }
+
+  scanExt(exts: string[], target = '/sdcard/', ignorePrefixPaths:string[] = []) {
+    const order = `shell find ${target} -name ${exts.join(' -o -name ')}`;
+    const allPath = execAdb(order, this.adbOpt).split(/\r\n/);
+    const node:string[] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of allPath) {
+      // ignore hidden folder and specify prefix paths
+      if (ignorePrefixPaths.some((i) => item.startsWith(i)) || item.indexOf('/.') !== -1) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      const path = item.split('/').slice(0, -1).join('/');
+      if (!node.includes(path)) {
+        node.push(path);
+      }
+    }
+    return node;
+  }
 }
