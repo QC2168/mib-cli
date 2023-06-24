@@ -194,8 +194,12 @@ export default class Mib {
     return node;
   }
 
-  public reloadConfig(): ConfigType {
-    this.config = getConfig(this.configPath);
+  public getConfig(): ConfigType {
+    return this.config;
+  }
+
+  public reloadConfig(cfg:ConfigType|null = null): ConfigType {
+    this.config = cfg ?? getConfig(this.configPath);
     return this.config;
   }
 }

@@ -4,7 +4,8 @@ import log from "./utils/logger";
 
 (async () => {
   const i = new Mib();
-  const device: string|null = await selectDevice(i.config.adbPath ?? 'adb.exe');
+  const cfg = i.getConfig();
+  const device: string|null = await selectDevice(cfg.adbPath ?? 'adb.exe');
   if (device) {
     i.setDevice(device);
     i.startAll();
