@@ -13,6 +13,7 @@ export interface FileNodeType {
   isDirectory: boolean;
   fileMTime?: string | Date;
   children: FileNodeType[] | null;
+  hash?: string;
 }
 
 // 获取文件列表

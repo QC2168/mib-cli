@@ -10,6 +10,7 @@ export interface SaveItemType {
   full?: boolean;
   output?: string;
   id?: number;
+  checkHash? :boolean;
 }
 
 // 备份目标
