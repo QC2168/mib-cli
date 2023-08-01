@@ -21,7 +21,13 @@ import pathRepair from "./utils/pathRepair";
 import { getErrorMessage } from "./utils/error";
 
 const speedReg: RegExp = /[0-9.]+\sMB\/s/;
-
+interface BackupOptionType{
+  backupDir:string;
+  outputDir:string;
+  full?:boolean;
+  hash?:boolean;
+  deep?:true
+}
 export default class Mib {
   public readonly adbOpt: ExecAdbOptions;
 
@@ -49,17 +55,23 @@ export default class Mib {
     this.adbOpt.current = name;
   }
 
-  diffNode(backupDir: string, outputDir: string) {
+  diffNode({
+    backupDir,
+    outputDir, hash = false, deep = true,
+  } :BackupOptionType) {
     const mobileFileNodeList: FileNodeType[] = getMobileFileNodeList({
       targetPath: backupDir,
       adbOpt: this.adbOpt,
+      hash,
     });
     // 获取当前存储空间
-    const localFileNodeList: FileNodeType[] = getLocalFileNodeList(outputDir);
+    // eslint-disable-next-line max-len
+    const localFileNodeList: FileNodeType[] = getLocalFileNodeList({ targetPath: outputDir, deep, hash });
     // 对比文件
     const diffList: FileNodeType[] = diff(
       localFileNodeList,
       mobileFileNodeList,
+      { checkMD5: hash },
     );
     return {
       mobileFileNodeList,
@@ -93,7 +105,8 @@ export default class Mib {
     }
   }
 
-  backup(target: string, output: string, full: boolean = false) {
+  backup(target: string, output: string, opt:Partial<BackupOptionType> = {}) {
+    const { full } = opt;
     if (!this.adbOpt.current) {
       log("请先连接设备");
       return;
@@ -101,7 +114,11 @@ export default class Mib {
     if (!full) {
       // 备份非备份的文件数据
       // 获取手机中的文件信息,对比本地
-      const { diffList } = this.diffNode(target, output);
+      const { diffList } = this.diffNode({
+        backupDir: target,
+        outputDir: output,
+        ...opt,
+      });
       // 计算体积和数量
       computeNodeListSize(diffList);
       // 执行备份程序
@@ -119,6 +136,7 @@ export default class Mib {
 
   start(item: SaveItemType) {
     const { output } = this.config;
+    const { full, checkHash } = item;
 
     if (!this.adbOpt.current) {
       log("请先连接设备");
@@ -139,7 +157,7 @@ export default class Mib {
     } else {
       // 判断导出路径
       isPath(outputDir);
-      this.backup(backupDir, outputDir, item.full);
+      this.backup(backupDir, outputDir, { full, hash: checkHash });
     }
   }
 
