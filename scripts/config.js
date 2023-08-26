@@ -16,7 +16,7 @@ export const cjs = {
   format: "cjs", outExtension: { '.js': '.cjs' },
 };
 export const dev = {
-  watch: true,
+  ...config,
   sourcemap: true,
 };
 export const buildConfig = {

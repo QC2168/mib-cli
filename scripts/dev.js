@@ -3,7 +3,6 @@ import config, { esm, cjs, dev } from "./config.js";
 
 esbuild
   .build({
-    ...config,
     ...esm,
     ...dev,
     outdir: "/dist/es",
@@ -13,7 +12,6 @@ esbuild
 
 esbuild
   .build({
-    ...config,
     ...cjs,
     ...dev,
     outdir: "/dist/cjs",
