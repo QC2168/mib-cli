@@ -123,10 +123,12 @@ export default class Mib {
       computeNodeListSize(diffList);
       // 执行备份程序
       const orders = createAdbOrders(diffList, output);
-      if (orders.length === 0) {
-        log("无需备份");
+      const count = orders.length;
+      if (count === 0) {
+        log("该节点本次无需备份");
         return;
       }
+      log(`该节点本次需要备份数量${count}个`);
       this.move(orders);
     } else {
       // 不文件对比，直接备份
