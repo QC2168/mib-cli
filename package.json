@@ -18,7 +18,7 @@
     "lint": "eslint ./src/**/*.ts --fix && tsc",
     "dev": "node scripts/dev.js",
     "types": "tsc --emitDeclarationOnly --outDir dist",
-    "prebuild": "rmdir /s/q dist",
+    "prebuild": "if exist rmdir /s/q dist",
     "build": "pnpm prebuild && pnpm lint && node scripts/build.js && pnpm types",
     "commit": "gitmoji -c",
     "release": "pnpm lint && pnpm build && release-it"
