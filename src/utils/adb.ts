@@ -31,7 +31,7 @@ export const execAdb = (code: string, option:ExecAdbOptions) => {
     current ? `-s ${current}` : ""
   } ${code}`;
   const command = `${adbPath} ${body}`;
-  log(`adb ${body}`);
+  log(`adb ${body}`, 'command');
   return execSync(command, {
     maxBuffer: 1024 ** 6,
   }).toString();

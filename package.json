@@ -69,6 +69,6 @@
     "pnpm": "^7.0.0",
     "prompts": "^2.4.2",
     "regenerator-runtime": "^0.13.9",
-    "winston": "^3.5.1"
+    "winston": "^3.10.0"
   }
 }

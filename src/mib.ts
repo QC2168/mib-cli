@@ -86,7 +86,7 @@ export default class Mib {
       try {
         const out: string = execAdb(order, this.adbOpt);
         const speed = out.match(speedReg) || ["读取速度失败"];
-        log(`平均传输速度${speed}`);
+        process.stdout.write(`平均传输速度${speed} \r`);
       } catch (e: any) {
         const [info] = order.match(/(".+?")/g) || ["获取数据失败"];
         log(`${info} error:${e.message}`);
@@ -99,7 +99,7 @@ export default class Mib {
     try {
       const out: string = execAdb(`pull "${source}" "${target}"`, this.adbOpt);
       const speed = out.match(speedReg) || ["读取速度失败"];
-      log(`平均传输速度${speed}`);
+      process.stdout.write(`平均传输速度${speed} \r`);
     } catch (e: any) {
       log(`备份文件夹${source}失败 error:${e.message}`);
     }
